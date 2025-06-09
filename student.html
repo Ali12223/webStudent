@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>واجهة الطالب - مساعد الطالب</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Fuse.js is needed for student question search -->
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        /* Primary color will be set by JS from settings */
+        :root {
+            --primary-color: #2563eb; /* Default fallback */
+        }
+        /* Example of using the primary color */
+        .bg-primary { background-color: var(--primary-color); }
+        .text-primary { color: var(--primary-color); }
+        .border-primary { border-color: var(--primary-color); }
+        .focus\:ring-primary:focus { ring-color: var(--primary-color); }
+        .focus\:border-primary:focus { border-color: var(--primary-color); }
+        .hover\:bg-primary-dark:hover { background-color: color-mix(in srgb, var(--primary-color) 85%, black); }
+
+        .border-l-4.border-blue-500 { border-left-color: var(--primary-color); }
+        .text-blue-800 { color: color-mix(in srgb, var(--primary-color) 70%, black); }
+        .bg-blue-50 { background-color: color-mix(in srgb, var(--primary-color) 10%, white); }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen" data-theme="light">
+    <!-- Main App Container -->
+    <div id="app" class="flex-grow flex flex-col">
+        <!-- Navigation Bar for Student Interface -->
+        <nav class="bg-primary text-white shadow-lg">
+            <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+                <a href="index.html" class="flex items-center space-x-2 space-x-reverse text-white hover:text-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    
+                    <link rel="stylesheet" href="/index.htlm">
+                    <span>العودة للصفحة الرئيسية</span>
+                </a>
+                <div class="flex items-center space-x-2 space-x-reverse">
+                    <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-primary font-bold text-sm">
+                        🎓
+                    </div>
+                    <h1 class="text-lg font-bold site-title-nav">واجهة الطالب</h1>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content - Student Interface -->
+        <main class="container mx-auto px-4 py-8 flex-grow">
+            <div id="studentFormContainer" class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-6 text-center">أدخل تفاصيل سؤالك</h2>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label for="studentTerm" class="block text-sm font-medium text-gray-700 mb-1">الفصل الدراسي</label>
+                        <select id="studentTerm" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
+                            <option value="">اختر الفصل الدراسي</option>
+                            <!-- Options will be populated by JavaScript -->
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="studentGrade" class="block text-sm font-medium text-gray-700 mb-1">الصف</label>
+                        <select id="studentGrade" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
+                            <option value="">اختر الصف</option>
+                            <!-- Options will be populated by JavaScript -->
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="studentSubject" class="block text-sm font-medium text-gray-700 mb-1">المادة</label>
+                        <select id="studentSubject" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
+                            <option value="">اختر المادة</option>
+                            <!-- Options will be populated by JavaScript -->
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="studentQuestion" class="block text-sm font-medium text-gray-700 mb-1">اكتب سؤالك</label>
+                        <textarea id="studentQuestion" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary" placeholder="اكتب سؤالك هنا..."></textarea>
+                    </div>
+                    
+                    <button id="submitStudentQuestionBtn" class="w-full bg-primary hover:bg-primary-dark text-white py-3 px-4 rounded-lg font-bold transition">
+                        إرسال السؤال
+                    </button>
+                </div>
+            </div>
+
+            <div id="studentResultContainer" class="hidden max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md mt-8">
+                <h2 class="text-2xl font-bold mb-6 text-center">إجابة سؤالك</h2>
+                
+                <div class="bg-blue-50 border-l-4 border-primary p-4 mb-6">
+                    <p id="studentOriginalQuestion" class="font-medium text-blue-800">السؤال: ...</p>
+                </div>
+                
+                <div class="bg-green-50 border-l-4 border-green-500 p-4 mb-6">
+                    <h3 class="font-bold text-green-800 mb-2 text-lg">✅ الإجابة:</h3>
+                    <p id="studentAnswer" class="text-green-700"></p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <p class="text-sm text-gray-500">📘 المادة</p>
+                        <p id="studentAnswerSubject" class="font-medium"></p>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <p class="text-sm text-gray-500">🏫 الصف</p>
+                        <p id="studentAnswerGrade" class="font-medium"></p>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <p class="text-sm text-gray-500">📄 رقم الصفحة</p>
+                        <p id="studentAnswerPage" class="font-medium"></p>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <p class="text-sm text-gray-500">📦 الوحدة</p>
+                        <p id="studentAnswerUnit" class="font-medium"></p>
+                    </div>
+                </div>
+                
+                <div class="flex justify-center">
+                    <button id="askAnotherQuestionBtn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-6 rounded-lg font-medium transition">
+                        🔄 طرح سؤال آخر
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer class="bg-gray-100 text-center text-gray-600 py-4 mt-auto">
+        <p class="footer-text">© 2023 Student Helper. جميع الحقوق محفوظة.</p>
+    </footer>
+
+    <script src="js/data_storage.js"></script>
+    <script src="js/ui_common.js"></script>
+    <script src="js/student_page.js"></script>
+</body>
+</html>

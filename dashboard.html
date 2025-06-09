@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - مساعد الطالب</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chart.js and Fuse.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb; 
+        }
+        .bg-primary { background-color: var(--primary-color); }
+        .text-primary { color: var(--primary-color); }
+        .border-primary { border-color: var(--primary-color); }
+        .ring-primary { --tw-ring-color: var(--primary-color); }
+        .focus\:ring-primary:focus { --tw-ring-color: var(--primary-color); }
+        .focus\:border-primary:focus { border-color: var(--primary-color); }
+        .hover\:bg-primary-dark:hover { background-color: color-mix(in srgb, var(--primary-color) 85%, black); }
+        
+        .admin-tab-active {
+            font-weight: 500;
+        }
+        /* Custom toggle switch style */
+        .toggle-checkbox:checked + .toggle-label .toggle-dot {
+            transform: translateX(100%);
+            background-color: white;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: var(--primary-color);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 flex flex-col min-h-screen" data-theme="light">
+    <div id="dashboardApp" class="flex h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white shadow-md fixed h-full overflow-y-auto transition-transform duration-300 ease-in-out rtl:-translate-x-full sm:rtl:translate-x-0 print:hidden z-50">
+            <div class="p-4 border-b border-gray-200 flex items-center space-x-3 space-x-reverse">
+                <a href="index.html" class="flex items-center space-x-2 space-x-reverse cursor-pointer">
+                    <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold text-xl dashboard-logo-container">
+                        👑 
+                    </div>
+                </a>
+                <div>
+                    <h2 class="font-bold site-title-nav">لوحة التحكم</h2> 
+                    <p class="text-xs text-gray-500 dashboard-subtitle">مساعد الطالب</p> 
+                </div>
+            </div>
+            
+            <nav class="p-2 mt-4">
+                <div class="space-y-1">
+                    <a href="#generalSettings" data-tab="generalSettings" class="admin-tab flex items-center px-3 py-2 text-sm font-medium rounded-lg hover:bg-gray-100 text-gray-900">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" /></svg>
+                        الإعدادات العامة
+                    </a>
+                     <a href="#appearanceSettings" data-tab="appearanceSettings" class="admin-tab flex items-center px-3 py-2 text-sm font-medium rounded-lg hover:bg-gray-100 text-gray-900">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+                        إعدادات المظهر
+                    </a>
+                    <a href="#userManagement" data-tab="userManagement" class="admin-tab flex items-center px-3 py-2 text-sm font-medium rounded-lg hover:bg-gray-100 text-gray-900">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v1h8v-1zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-1a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v1h-3zM4.75 12.094A5.973 5.973 0 004 15v1H1v-1a3 3 0 013.75-2.906z" /></svg>
+                        إدارة المستخدمين
+                    </a>
+                    <a href="#contentManagement" data-tab="contentManagement" class="admin-tab flex items-center px-3 py-2 text-sm font-medium rounded-lg hover:bg-gray-100 text-gray-900">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" /></svg>
+                        المحتوى الأكاديمي
+                    </a>
+                    <a href="#questionManagement" data-tab="questionManagement" class="admin-tab flex items-center px-3 py-2 text-sm font-medium rounded-lg hover:bg-gray-100 text-gray-900">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                        إدارة الأسئلة
+                    </a>
+                    <a href="#questionSearchSettings" data-tab="questionSearchSettings" class="admin-tab flex items-center px-3 py-2 text-sm font-medium rounded-lg hover:bg-gray-100 text-gray-900">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg>
+                        إعدادات بحث الأسئلة
+                    </a>
+                    <a href="#questionStatistics" data-tab="questionStatistics" class="admin-tab flex items-center px-3 py-2 text-sm font-medium rounded-lg hover:bg-gray-100 text-gray-900">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" /></svg>
+                        إحصائيات الأسئلة
+                    </a>
+                    <a href="#advancedFeatures" data-tab="advancedFeatures" class="admin-tab flex items-center px-3 py-2 text-sm font-medium rounded-lg hover:bg-gray-100 text-gray-900">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                        الميزات المتقدمة
+                    </a>
+                </div>
+            </nav>
+            
+            <div class="absolute bottom-0 w-full p-4 border-t border-gray-200">
+                <button id="logoutBtn" class="w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-100 dark:hover:bg-red-700 dark:text-red-300 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd" /></svg>
+                    تسجيل الخروج
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Main Content Area -->
+         <div class="flex-1 sm:mr-64 transition-all duration-300 ease-in-out"> 
+            <!-- Admin Header -->
+            <header class="bg-white shadow-sm sticky top-0 z-40 print:hidden">
+                 <div class="px-6 py-3 flex justify-between items-center">
+                    <div class="flex items-center">
+                        <button id="sidebarToggleBtn" class="sm:hidden p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary">
+                            <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                            </svg>
+                        </button>
+                        <h1 class="text-xl font-bold text-gray-900 mr-3" id="adminTabTitle">الإعدادات العامة</h1>
+                    </div>
+                    <div class="flex items-center space-x-4 space-x-reverse">
+                        <button id="toggleDarkModeBtnDashboard" class="p-2 rounded-full hover:bg-gray-100">
+                            <svg id="darkModeIconDashboard" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                            <svg id="lightModeIconDashboard" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+                        </button>
+                        <div class="flex items-center space-x-2 space-x-reverse">
+                            <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-sm font-semibold" id="adminAvatar">
+                                <!-- Initial of admin name -->
+                            </div>
+                            <span class="font-medium" id="currentAdminName">المشرف</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Admin Tab Content Area -->
+            <main id="adminDashboardContent" class="p-6 bg-gray-100 flex-grow">
+                <!-- General Settings Tab Content -->
+                <div id="generalSettingsTabContent" class="admin-tab-content">
+                    <div class="bg-white shadow rounded-lg p-6 mb-6">
+                        <h2 class="text-lg font-bold mb-4">الإعدادات الأساسية للموقع</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="settingsSiteName" class="block text-sm font-medium text-gray-700 mb-1">اسم الموقع العام (يظهر في عنوان الصفحة)</label>
+                                <input type="text" id="settingsSiteName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
+                            </div>
+                            <div>
+                                <label for="settingsHomePageTitle" class="block text-sm font-medium text-gray-700 mb-1">عنوان الصفحة الرئيسية (النص الكبير في الترويسة)</label>
+                                <input type="text" id="settingsHomePageTitle" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white shadow rounded-lg p-6 mb-6">
+                        <h2 class="text-lg font-bold mb-4">النص والمحتوى</h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="settingsWelcomeMessage" class="block text-sm font-medium text-gray-700 mb-1">نص الترحيب في الصفحة الرئيسية</label>
+                                <textarea id="settingsWelcomeMessage" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary" rows="3"></textarea>
+                            </div>
+                            <div>
+                                <label for="settingsFooterText" class="block text-sm font-medium text-gray-700 mb-1">تذييل الصفحة (سيتم استبدال السنة تلقائيًا)</label>
+                                <input type="text" id="settingsFooterText" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex justify-end">
+                        <button id="saveGeneralSettingsBtn" class="bg-primary hover:bg-primary-dark text-white px-6 py-2 rounded-lg font-medium transition">
+                            حفظ الإعدادات العامة
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Appearance Settings Tab Content -->
+                <div id="appearanceSettingsTabContent" class="admin-tab-content hidden">
+                    <div class="bg-white shadow rounded-lg p-6 mb-6">
+                        <h2 class="text-lg font-bold mb-4">إعدادات الشعار والخلفية</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">شعار الموقع (للشريط العلوي)</label>
+                                <div class="flex items-center space-x-4 space-x-reverse">
+                                    <div class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden border border-gray-300">
+                                        <img id="appearanceLogoPreview" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMxZTQwOGYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0ibHVjaWRlIGx1Y2lkZS1ncmFkdWF0aW9uIj48cGF0aCBkPSJNMjIgMTJhMTAgMTAgMCAxIDEtMjAgMCAxMCAxMCAwIDAgMSAyMCAwWiIvPjxwYXRoIGQ9Ik0xNSA5LjItMTAgMTkiLz48cGF0aCBkPSJtOSAyIDcgNCIvPjwvc3ZnPg==" alt="Logo Preview" class="max-w-full max-h-full object-contain">
+                                    </div>
+                                    <div>
+                                        <label for="appearanceLogoUpload" class="cursor-pointer bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg text-sm font-medium transition">
+                                            تحميل شعار جديد
+                                            <input type="file" id="appearanceLogoUpload" class="hidden" accept="image/*">
+                                        </label>
+                                        <button id="removeAppearanceLogoBtn" class="mt-2 text-sm text-red-600 hover:text-red-800">إزالة الشعار</button>
+                                    </div>
+                                </div>
+                                <p class="mt-1 text-xs text-gray-500">مستحسن: PNG بخلفية شفافة, مربع.</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">صورة خلفية للموقع (اختياري)</label>
+                                 <div class="flex items-center space-x-4 space-x-reverse">
+                                    <div class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden border border-gray-300">
+                                        <img id="appearanceBgPreview" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Background Preview" class="max-w-full max-h-full object-cover">
+                                    </div>
+                                    <div>
+                                        <label for="appearanceBgUpload" class="cursor-pointer bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg text-sm font-medium transition">
+                                            تحميل صورة خلفية
+                                            <input type="file" id="appearanceBgUpload" class="hidden" accept="image/*">
+                                        </label>
+                                        <button id="removeAppearanceBgBtn" class="mt-2 text-sm text-red-600 hover:text-red-800">إزالة الخلفية</button>
+                                    </div>
+                                </div>
+                                 <p class="mt-1 text-xs text-gray-500">ستظهر هذه الصورة كخلفية لكامل الموقع.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white shadow rounded-lg p-6 mb-6">
+                        <h2 class="text-lg font-bold mb-4">الألوان والخطوط</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div>
+                                <label for="appearancePrimaryColor" class="block text-sm font-medium text-gray-700 mb-1">اللون الرئيسي</label>
+                                <input type="color" id="appearancePrimaryColor" class="w-full h-10 px-1 py-1 border border-gray-300 rounded-lg cursor-pointer">
+                            </div>
+                            <div>
+                                <label for="appearanceNavbarColor" class="block text-sm font-medium text-gray-700 mb-1">لون الشريط العلوي</label>
+                                <input type="color" id="appearanceNavbarColor" class="w-full h-10 px-1 py-1 border border-gray-300 rounded-lg cursor-pointer">
+                            </div>
+                            <div>
+                                <label for="appearanceFontFamily" class="block text-sm font-medium text-gray-700 mb-1">عائلة الخط</label>
+                                <select id="appearanceFontFamily" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
+                                    <option value="'Tajawal', sans-serif">Tajawal (عربي)</option>
+                                    <option value="'Cairo', sans-serif">Cairo (عربي)</option>
+                                    <option value="'Noto Sans Arabic', sans-serif">Noto Sans Arabic (عربي)</option>
+                                    <option value="'Arial', sans-serif">Arial (إنجليزي)</option>
+                                    <option value="'Verdana', sans-serif">Verdana (إنجليزي)</option>
+                                    <option value="'Times New Roman', serif">Times New Roman (إنجليزي)</option>
+                                    <option value="'Segoe UI', sans-serif">Segoe UI (إنجليزي)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="appearanceBaseFontSize" class="block text-sm font-medium text-gray-700 mb-1">حجم الخط الأساسي</label>
+                                <select id="appearanceBaseFontSize" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
+                                    <option value="small">صغير</option>
+                                    <option value="medium">متوسط</option>
+                                    <option value="large">كبير</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white shadow rounded-lg p-6">
+                        <h2 class="text-lg font-bold mb-4">إعدادات العرض الإضافية</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="appearanceStudentViewStyle" class="block text-sm font-medium text-gray-700 mb-1">نمط عرض واجهة الطالب</label>
+                                <select id="appearanceStudentViewStyle" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
+                                    <option value="simple">واجهة بسيطة</option>
+                                    <option value="modern">واجهة حديثة (تصميم مختلف)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="appearanceThemeMode" class="block text-sm font-medium text-gray-700 mb-1">وضع التصميم الافتراضي</label>
+                                <select id="appearanceThemeMode" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
+                                    <option value="light">فاتح</option>
+                                    <option value="dark">داكن</option>
+                                    <option value="auto">تلقائي (حسب النظام)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex justify-end">
+                        <button id="saveAppearanceSettingsBtn" class="bg-primary hover:bg-primary-dark text-white px-6 py-2 rounded-lg font-medium transition">
+                            حفظ إعدادات المظهر
+                        </button>
+                    </div>
+                </div>
+
+                <!-- User Management Tab Content -->
+                <div id="userManagementTabContent" class="admin-tab-content hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold">إدارة المستخدمين</h2> 
+                        <button id="addNewUserBtn" class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg text-sm font-medium transition">
+                            + إضافة مستخدم جديد
+                        </button>
+                    </div>
+                    <div class="bg-white shadow rounded-lg overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50 dark:bg-gray-700">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الاسم</th>
+                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">اسم المستخدم</th>
+                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الدور</th>
+                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">آخر تسجيل دخول</th>
+                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody" class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+                                 <tr><td colspan="5" class="text-center p-4 text-gray-500 dark:text-gray-400">جاري تحميل المستخدمين...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Content Management Tab Content -->
+                <div id="contentManagementTabContent" class="admin-tab-content hidden">
+                    <div class="bg-white shadow rounded-lg p-6 mb-6">
+                        <h2 class="text-xl font-bold mb-4">إدارة المحتوى الأكاديمي</h2>
+                        
+                        <div class="border-b border-gray-200 dark:border-gray-700">
+                            <nav class="-mb-px flex space-x-6 space-x-reverse" aria-label="Tabs">
+                                <button data-content-tab="terms" class="content-tab-button whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm border-primary text-primary">
+                                    الفصول الدراسية
+                                </button>
+                                <button data-content-tab="grades" class="content-tab-button whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-500">
+                                    الصفوف الدراسية
+                                </button>
+                                <button data-content-tab="subjects" class="content-tab-button whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-500">
+                                    المواد الدراسية
+                                </button>
+                                <button data-content-tab="units" class="content-tab-button whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-500">
+                                    الوحدات الدراسية
+                                </button>
+                            </nav>
+                        </div>
+                        
+                        <!-- Terms Sub-Tab -->
+                        <div id="termsContent" class="content-sub-tab-content mt-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">الفصول الدراسية</h3>
+                                <button id="addTermBtn" class="bg-primary hover:bg-primary-dark text-white px-3 py-1.5 rounded-lg text-xs font-medium transition">
+                                    + إضافة فصل دراسي
+                                </button>
+                            </div>
+                            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+                                    <thead class="bg-gray-100 dark:bg-gray-600">
+                                        <tr>
+                                            <th scope="col" class="px-4 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الاسم</th>
+                                            <th scope="col" class="px-4 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الكود</th>
+                                            <th scope="col" class="px-4 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الحالة</th>
+                                            <th scope="col" class="px-4 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الإجراءات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="termsTableBody" class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-600">
+                                        <tr><td colspan="4" class="text-center p-4 text-gray-500 dark:text-gray-400">جاري التحميل...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- Grades Sub-Tab -->
+                        <div id="gradesContent" class="content-sub-tab-content hidden mt-6">
+                             <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">الصفوف الدراسية</h3>
+                                <button id="addGradeBtn" class="bg-primary hover:bg-primary-dark text-white px-3 py-1.5 rounded-lg text-xs font-medium transition">
+                                    + إضافة صف دراسي
+                                </button>
+                            </div>
+                            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+                                    <thead class="bg-gray-100 dark:bg-gray-600">
+                                        <tr>
+                                            <th scope="col" class="px-4 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الاسم</th>
+                                            <th scope="col" class="px-4 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الكود</th>
+                                            <th scope="col" class="px-4 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الحالة</th>
+                                            <th scope="col" class="px-4 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الإجراءات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="gradesTableBody" class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-600">
+                                         <tr><td colspan="4" class="text-center p-4 text-gray-500 dark:text-gray-400">جاري التحميل...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Subjects Sub-Tab -->
+                        <div id="subjectsContent" class="content-sub-tab-content hidden mt-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">المواد الدراسية</h3>
+                                <button id="addSubjectBtn" class="bg-primary hover:bg-primary-dark text-white px-3 py-1.5 rounded-lg text-xs font-medium transition">
+                                    + إضافة مادة دراسية
+                                </button>
+                            </div>
+                            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+                                    <thead class="bg-gray-100 dark:bg-gray-600">
+                                        <tr>
+                                            <th scope="col" class="px-4 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الاسم</th>
+                                            <th scope="col" class="px-4 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الكود</th>
+                                            <th scope="col" class="px-4 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الحالة</th>
+                                            <th scope="col" class="px-4 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الإجراءات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="subjectsTableBody" class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-600">
+                                        <tr><td colspan="4" class="text-center p-4 text-gray-500 dark:text-gray-400">جاري التحميل...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Units Sub-Tab -->
+                        <div id="unitsContent" class="content-sub-tab-content hidden mt-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">الوحدات الدراسية</h3>
+                                <button id="addUnitBtn" class="bg-primary hover:bg-primary-dark text-white px-3 py-1.5 rounded-lg text-xs font-medium transition">
+                                    + إضافة وحدة دراسية
+                                </button>
+                            </div>
+                            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+                                    <thead class="bg-gray-100 dark:bg-gray-600">
+                                        <tr>
+                                            <th scope="col" class="px-4 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">اسم الوحدة</th>
+                                            <th scope="col" class="px-4 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">المادة</th>
+                                            <th scope="col" class="px-4 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">كود الوحدة</th>
+                                            <th scope="col" class="px-4 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الحالة</th>
+                                            <th scope="col" class="px-4 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الإجراءات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="unitsTableBody" class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-600">
+                                        <tr><td colspan="5" class="text-center p-4 text-gray-500 dark:text-gray-400">جاري التحميل...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question Management Tab Content -->
+                <div id="questionManagementTabContent" class="admin-tab-content hidden">
+                    <div class="bg-white shadow rounded-lg p-6 mb-6">
+                        <h2 class="text-xl font-bold mb-4">إدارة الأسئلة</h2>
+                        <div class="border-b border-gray-200 dark:border-gray-700">
+                            <nav class="-mb-px flex space-x-6 space-x-reverse" aria-label="Tabs">
+                                <button data-question-tab="upload" class="question-tab-button whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm border-primary text-primary">
+                                    رفع ملف الأسئلة
+                                </button>
+                                <button data-question-tab="manage" class="question-tab-button whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-500">
+                                    إدارة الأسئلة الموجودة
+                                </button>
+                            </nav>
+                        </div>
+
+                        <!-- Upload Questions Sub-Tab -->
+                        <div id="uploadTabContent" class="question-sub-tab-content mt-6">
+                            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 space-y-4">
+                                <div>
+                                    <h3 class="text-lg font-medium mb-2 text-gray-900 dark:text-gray-100">رفع ملف JSON للأسئلة</h3>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">ارفع ملف JSON يحتوي على الأسئلة والإجابات. تأكد من أن الملف يتبع البنية المطلوبة (مثل الحقول: question_original, answer_detailed, term_code, grade_code, subject_code, page_number, unit_name, keywords).</p>
+                                    
+                                    <div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center mb-4">
+                                        <div class="flex justify-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
+                                        </div>
+                                        <h4 class="mt-2 font-medium text-gray-900 dark:text-gray-100">اسحب وأفلت الملف هنا أو</h4>
+                                        <label for="questionFileUpload" class="cursor-pointer mt-2 inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-500 shadow-sm text-sm font-medium rounded-lg text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-600 hover:bg-gray-50 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                                            اختر ملف
+                                            <input type="file" id="questionFileUpload" accept=".json" class="hidden">
+                                        </label>
+                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">JSON فقط (الحد الأقصى للحجم يعتمد على المتصفح)</p>
+                                    </div>
+                                    
+                                    <div id="uploadProgress" class="hidden">
+                                        <div class="flex justify-between mb-1">
+                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200">جاري الرفع...</span>
+                                            <span id="uploadProgressValue" class="text-sm font-medium text-gray-700 dark:text-gray-200">0%</span>
+                                        </div>
+                                        <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2.5">
+                                            <div id="uploadProgressBar" class="bg-primary h-2.5 rounded-full" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="uploadPreview" class="hidden mt-6">
+                                        <h4 class="font-medium mb-2 text-gray-900 dark:text-gray-100">معاينة أول 5 أسئلة:</h4>
+                                        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg p-4">
+                                            <pre id="previewQuestions" class="text-xs overflow-auto max-h-60"></pre>
+                                        </div>
+                                        <div class="mt-4 flex justify-end space-x-3 space-x-reverse">
+                                            <button id="cancelUploadBtn" class="bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-lg font-medium transition">إلغاء</button>
+                                            <button id="confirmUploadBtn" class="bg-primary hover:bg-primary-dark text-white px-6 py-2 rounded-lg font-medium transition">تأكيد الرفع وإضافة الأسئلة</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Manage Questions Sub-Tab -->
+                        <div id="manageTabContent" class="question-sub-tab-content hidden mt-6">
+                            <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
+                                <div class="relative flex-grow w-full sm:w-auto">
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 dark:text-gray-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg>
+                                    </div>
+                                    <input type="text" id="questionSearchInput" class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary" placeholder="ابحث في الأسئلة...">
+                                </div>
+                                <div class="flex space-x-2 space-x-reverse">
+                                    <button id="exportQuestionsBtn" class="bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-800 dark:text-gray-200 px-3 py-2 rounded-lg text-sm font-medium transition">تصدير الكل JSON</button>
+                                    <button id="deleteAllQuestionsBtn" class="bg-red-100 dark:bg-red-700 hover:bg-red-200 dark:hover:bg-red-600 text-red-800 dark:text-red-200 px-3 py-2 rounded-lg text-sm font-medium transition">حذف جميع الأسئلة</button>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+                                    <thead class="bg-gray-100 dark:bg-gray-600">
+                                        <tr>
+                                            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">السؤال</th>
+                                            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">المادة</th>
+                                            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الصف</th>
+                                            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">الإجراءات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="questionsTableBody" class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-600">
+                                        <tr><td colspan="4" class="text-center p-4 text-gray-500 dark:text-gray-400">جاري تحميل الأسئلة...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="paginationContainer" class="mt-4 flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
+                                <p id="paginationInfo" class="text-sm text-gray-700 dark:text-gray-300">إظهار 0 إلى 0 من 0 سؤال</p>
+                                <div class="flex space-x-1 space-x-reverse">
+                                    <button id="prevPageBtn" disabled class="px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-600 hover:bg-gray-50 dark:hover:bg-gray-500 disabled:opacity-50">السابق</button>
+                                    <button id="nextPageBtn" disabled class="px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-600 hover:bg-gray-50 dark:hover:bg-gray-500 disabled:opacity-50">التالي</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Question Search Settings Tab Content -->
+                <div id="questionSearchSettingsTabContent" class="admin-tab-content hidden">
+                    <div class="bg-white shadow rounded-lg p-6">
+                        <h2 class="text-xl font-bold mb-6">إعدادات بحث الأسئلة (لواجهة الطالب)</h2>
+                        <div class="space-y-6">
+                             <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                <label for="enableFuzzySearchGlobal" class="block text-sm font-medium text-gray-700 dark:text-gray-200">تفعيل البحث المرن (Fuzzy Search)</label>
+                                <input type="checkbox" id="enableFuzzySearchGlobal" class="toggle-checkbox sr-only">
+                                <label for="enableFuzzySearchGlobal" class="toggle-label relative w-11 h-6 bg-gray-200 dark:bg-gray-600 rounded-full cursor-pointer transition-colors ease-in-out duration-200">
+                                    <span class="toggle-dot absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform ease-in-out duration-200"></span>
+                                </label>
+                            </div>
+                            <div>
+                                <label for="fuzzySearchThresholdGlobal" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">عتبة حساسية البحث المرن (0.0 - 1.0، الأقل أكثر تساهلاً)</label>
+                                <input type="number" id="fuzzySearchThresholdGlobal" min="0.1" max="0.9" step="0.1" class="w-full md:w-1/3 px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">القيمة الافتراضية 0.5. قيم أقل (مثل 0.3) ستعرض نتائج أكثر ولكن أقل دقة.</p>
+                            </div>
+                            <hr class="dark:border-gray-600">
+                            <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                <label for="enableKeywordSearchGlobal" class="block text-sm font-medium text-gray-700 dark:text-gray-200">تفعيل البحث بالكلمات المفتاحية</label>
+                                 <input type="checkbox" id="enableKeywordSearchGlobal" class="toggle-checkbox sr-only">
+                                <label for="enableKeywordSearchGlobal" class="toggle-label relative w-11 h-6 bg-gray-200 dark:bg-gray-600 rounded-full cursor-pointer transition-colors ease-in-out duration-200">
+                                    <span class="toggle-dot absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform ease-in-out duration-200"></span>
+                                </label>
+                            </div>
+                            <div>
+                                <label for="minKeywordMatchGlobal" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">الحد الأدنى لعدد الكلمات المفتاحية المتطابقة</label>
+                                <input type="number" id="minKeywordMatchGlobal" min="1" max="5" step="1" class="w-full md:w-1/3 px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">عدد الكلمات من سؤال الطالب التي يجب أن تتطابق مع كلمات مفتاحية للسؤال في النظام. الافتراضي 2.</p>
+                            </div>
+                            <hr class="dark:border-gray-600">
+                             <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                <label for="enableDirectMatchFallbackGlobal" class="block text-sm font-medium text-gray-700 dark:text-gray-200">تفعيل البحث المباشر (كحل أخير)</label>
+                                <input type="checkbox" id="enableDirectMatchFallbackGlobal" class="toggle-checkbox sr-only">
+                                <label for="enableDirectMatchFallbackGlobal" class="toggle-label relative w-11 h-6 bg-gray-200 dark:bg-gray-600 rounded-full cursor-pointer transition-colors ease-in-out duration-200">
+                                    <span class="toggle-dot absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform ease-in-out duration-200"></span>
+                                </label>
+                            </div>
+                            <hr class="dark:border-gray-600">
+                            <div>
+                                <label for="studentResultsCountGlobal" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">عدد النتائج المقترحة للطالب (إذا وجد أكثر من تطابق)</label>
+                                <input type="number" id="studentResultsCountGlobal" min="1" max="10" step="1" class="w-full md:w-1/3 px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">الافتراضي 5. (هذه الميزة لم تطبق بالكامل في منطق بحث الطالب بعد).</p>
+                            </div>
+                        </div>
+                         <div class="mt-8 flex justify-end">
+                            <button id="saveQuestionSearchSettingsBtn" class="bg-primary hover:bg-primary-dark text-white px-6 py-2 rounded-lg font-medium transition">
+                                حفظ إعدادات البحث
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question Statistics Tab Content -->
+                <div id="questionStatisticsTabContent" class="admin-tab-content hidden">
+                    <div class="bg-white shadow rounded-lg p-6 mb-6">
+                        <h2 class="text-xl font-bold mb-6">إحصائيات الأسئلة</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                            <div class="bg-blue-50 dark:bg-blue-800 p-4 rounded-lg border border-blue-200 dark:border-blue-700">
+                                <p class="text-sm text-blue-600 dark:text-blue-300">إجمالي الأسئلة</p>
+                                <h3 id="statsTotalQuestionsCount" class="text-2xl font-bold text-blue-800 dark:text-blue-100">0</h3>
+                            </div>
+                            <div class="bg-green-50 dark:bg-green-800 p-4 rounded-lg border border-green-200 dark:border-green-700">
+                                <p class="text-sm text-green-600 dark:text-green-300">أسئلة بكلمات مفتاحية</p>
+                                <h3 id="statsKeywordQuestionsCount" class="text-2xl font-bold text-green-800 dark:text-green-100">0</h3>
+                            </div>
+                            <div class="bg-yellow-50 dark:bg-yellow-800 p-4 rounded-lg border border-yellow-200 dark:border-yellow-700">
+                                <p class="text-sm text-yellow-600 dark:text-yellow-300">أسئلة تم طرحها (أكثر من مرة)</p>
+                                <h3 id="statsCommonQuestionsCount" class="text-2xl font-bold text-yellow-800 dark:text-yellow-100">0</h3>
+                            </div>
+                            <div class="bg-red-50 dark:bg-red-800 p-4 rounded-lg border border-red-200 dark:border-red-700">
+                                <p class="text-sm text-red-600 dark:text-red-300">أسئلة لم يتم طرحها</p>
+                                <h3 id="statsUnansweredQuestionsCount" class="text-2xl font-bold text-red-800 dark:text-red-100">0</h3>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div class="bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600">
+                                <h3 class="font-medium mb-4 text-gray-900 dark:text-gray-100">توزيع الأسئلة حسب المادة</h3>
+                                <div class="h-64"><canvas id="questionsBySubjectChart"></canvas></div>
+                            </div>
+                            <div class="bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600">
+                                <h3 class="font-medium mb-4 text-gray-900 dark:text-gray-100">توزيع الأسئلة حسب الصف</h3>
+                                <div class="h-64"><canvas id="questionsByGradeChart"></canvas></div>
+                            </div>
+                            <div class="bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600 lg:col-span-2">
+                                <h3 class="font-medium mb-4 text-gray-900 dark:text-gray-100">أكثر الكلمات المفتاحية استخدامًا (أعلى 10)</h3>
+                                <div class="h-72"><canvas id="topKeywordsChart"></canvas></div>
+                            </div>
+                            <div class="bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600 lg:col-span-2">
+                                <h3 class="font-medium mb-4 text-gray-900 dark:text-gray-100">أكثر الأسئلة تكرارًا (أعلى 10)</h3>
+                                <div class="h-72 overflow-y-auto">
+                                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+                                        <thead class="bg-gray-50 dark:bg-gray-600 sticky top-0">
+                                            <tr>
+                                                <th scope="col" class="px-4 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">السؤال (مقتطف)</th>
+                                                <th scope="col" class="px-4 py-2 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">عدد المرات</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="commonQuestionsTableBody" class="bg-white divide-y divide-gray-200 dark:bg-gray-700 dark:divide-gray-600">
+                                            <!-- Populated by JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-8 bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600">
+                            <h3 class="font-medium mb-4 text-gray-900 dark:text-gray-100">تصدير تقرير الإحصائيات</h3>
+                            <div class="flex space-x-3 space-x-reverse mb-4">
+                                <button id="exportStatsCSV" class="bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-lg text-sm font-medium transition">تصدير CSV</button>
+                                <button id="exportStatsJSON" class="bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-lg text-sm font-medium transition">تصدير JSON</button>
+                                <!-- PDF export might be too complex for client-side only without a large library -->
+                            </div>
+                            <h4 class="font-medium text-sm mb-2 text-gray-800 dark:text-gray-200">معاينة التقرير النصي:</h4>
+                            <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                                <pre id="statsFullReportPreview" class="text-xs overflow-auto max-h-60 whitespace-pre-wrap"></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Features Tab Content -->
+                <div id="advancedFeaturesTabContent" class="admin-tab-content hidden">
+                    <div class="bg-white shadow rounded-lg p-6 mb-6">
+                        <h2 class="text-xl font-bold mb-6">الميزات المتقدمة وإدارة البيانات</h2>
+                        <div class="space-y-8">
+                            <!-- Developer Mode -->
+                            <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                                <h3 class="font-medium mb-3 text-gray-900 dark:text-gray-100">وضع المطور</h3>
+                                <div class="flex items-center justify-between">
+                                    <p class="text-sm text-gray-600 dark:text-gray-300">تفعيل وضع المطور يسمح باختبار ميزات تجريبية ويعرض معلومات إضافية لتصحيح الأخطاء في وحدة التحكم.</p>
+                                    <input type="checkbox" id="advEnableDevMode" class="toggle-checkbox sr-only">
+                                    <label for="advEnableDevMode" class="toggle-label relative w-11 h-6 bg-gray-200 dark:bg-gray-600 rounded-full cursor-pointer transition-colors ease-in-out duration-200">
+                                        <span class="toggle-dot absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform ease-in-out duration-200"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Smart Search Tools (moved to Question Search Settings tab, but kept structure for reference) -->
+                            <!-- <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                                <h3 class="font-medium mb-3 text-gray-900 dark:text-gray-100">أدوات البحث الذكي (للطلاب)</h3>
+                                <div class="space-y-4">
+                                     <div class="flex items-center justify-between">
+                                        <label for="advFuzzySearchThreshold" class="block text-sm font-medium text-gray-700 dark:text-gray-300">حساسية البحث المرن (0.1 - 0.9)</label>
+                                        <input type="number" id="advFuzzySearchThreshold" min="0.1" max="0.9" step="0.1" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary w-32">
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <label for="advMinKeywordMatch" class="block text-sm font-medium text-gray-700 dark:text-gray-300">الحد الأدنى لمطابقة الكلمات المفتاحية</label>
+                                        <input type="number" id="advMinKeywordMatch" min="1" max="5" step="1" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary w-32">
+                                    </div>
+                                    <button id="advTestSearchBtn" class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg text-sm font-medium transition">اختبار إعدادات البحث</button>
+                                </div>
+                            </div> -->
+
+                            <!-- Data Cleaning -->
+                            <div class="border border-red-300 dark:border-red-700 rounded-lg p-4">
+                                <h3 class="font-medium mb-3 text-red-700 dark:text-red-300">تنظيف البيانات (عمليات خطيرة)</h3>
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <p class="text-sm text-gray-600 dark:text-gray-300">حذف جميع إحصائيات استخدام الأسئلة.</p>
+                                        <button id="advClearStatsDataBtn" class="bg-red-100 dark:bg-red-800 hover:bg-red-200 dark:hover:bg-red-700 text-red-800 dark:text-red-200 px-4 py-2 rounded-lg text-sm font-medium transition">حذف الإحصائيات</button>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <p class="text-sm text-gray-600 dark:text-gray-300">إعادة ضبط جميع بيانات وإعدادات الموقع إلى الوضع الافتراضي (لا يمكن التراجع!).</p>
+                                        <button id="advResetAllDataBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition">إعادة ضبط كاملة للموقع</button>
+                                    </div>
+                                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">ملاحظة: حذف بيانات الاختبار ("advClearTestDataBtn") لم يتم تحديد وظيفته بعد.</p>
+                                     <button id="advClearTestDataBtn" class="hidden bg-yellow-100 hover:bg-yellow-200 text-yellow-800 px-4 py-2 rounded-lg text-sm font-medium transition">حذف بيانات الاختبار (غير مفعل)</button>
+                                </div>
+                            </div>
+
+                            <!-- Import/Export Data -->
+                            <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                                <h3 class="font-medium mb-3 text-gray-900 dark:text-gray-100">استيراد / تصدير جميع بيانات الموقع</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <button id="advExportAllDataBtn" class="w-full bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-800 dark:text-gray-200 px-4 py-3 rounded-lg font-medium transition flex items-center justify-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                                            تصدير كل البيانات (JSON)
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <label for="advImportAllDataInput" class="w-full bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-800 dark:text-gray-200 px-4 py-3 rounded-lg font-medium transition flex items-center justify-center cursor-pointer">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.5 2A2.5 2.5 0 002 4.5v11A2.5 2.5 0 004.5 18h11a2.5 2.5 0 002.5-2.5V8.836a2.502 2.502 0 00-.732-1.768l-3.086-3.086A2.502 2.502 0 0012.164 2H4.5zm5.56 8.03a.75.75 0 00-1.06-1.06L6.75 11.19V6.75a.75.75 0 00-1.5 0v4.44L2.97 8.97a.75.75 0 10-1.06 1.06l3.25 3.25a.75.75 0 001.06 0l4.8-4.8zM13 2.75A1.25 1.25 0 0011.75 4H7.5a.75.75 0 000 1.5h3.579l-2.22 2.22a.75.75 0 001.06 1.06L13 6.56V10a.75.75 0 001.5 0V4.75A1.25 1.25 0 0013 3.5V2.75z" clip-rule="evenodd" /></svg>
+                                            استيراد بيانات من ملف (JSON)
+                                            <input type="file" id="advImportAllDataInput" accept=".json" class="hidden">
+                                        </label>
+                                    </div>
+                                </div>
+                                <div id="advBackupProgress" class="hidden mt-4 space-y-2">
+                                    <div class="flex justify-between text-sm">
+                                        <span id="advBackupStatus" class="text-gray-700 dark:text-gray-200">جاري الاستعداد...</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2.5">
+                                        <div id="advBackupProgressBar" class="bg-primary h-2.5 rounded-full transition-all duration-300 ease-linear" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Notification Settings -->
+                            <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                                <h3 class="font-medium mb-3 text-gray-900 dark:text-gray-100">إعدادات الإشعارات (تجريبية)</h3>
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <label for="advEnableEmailNotifications" class="block text-sm font-medium text-gray-700 dark:text-gray-200">تفعيل إشعارات البريد الإلكتروني (محاكاة)</label>
+                                        <input type="checkbox" id="advEnableEmailNotifications" class="toggle-checkbox sr-only">
+                                        <label for="advEnableEmailNotifications" class="toggle-label relative w-11 h-6 bg-gray-200 dark:bg-gray-600 rounded-full cursor-pointer transition-colors ease-in-out duration-200">
+                                            <span class="toggle-dot absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform ease-in-out duration-200"></span>
+                                        </label>
+                                    </div>
+                                    <div>
+                                        <label for="advNotificationEmail" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">البريد الإلكتروني لتلقي الإشعارات</label>
+                                        <input type="email" id="advNotificationEmail" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary" placeholder="admin@example.com">
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <label for="advNotificationFrequency" class="block text-sm font-medium text-gray-700 dark:text-gray-300">تواتر الإشعارات</label>
+                                        <select id="advNotificationFrequency" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary w-full md:w-1/3">
+                                            <option value="daily">يوميًا</option>
+                                            <option value="weekly" selected>أسبوعيًا</option>
+                                            <option value="monthly">شهريًا</option>
+                                        </select>
+                                    </div>
+                                    <button id="advTestNotificationBtn" class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg text-sm font-medium transition">اختبار إرسال إشعار</button>
+                                </div>
+                            </div>
+
+                            <!-- System Information -->
+                            <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                                <h3 class="font-medium mb-3 text-gray-900 dark:text-gray-100">معلومات النظام</h3>
+                                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                                    <pre id="advSystemInfo" class="text-xs overflow-auto max-h-60 whitespace-pre-wrap">جاري تحميل معلومات النظام...</pre>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-8 flex justify-end">
+                            <button id="saveAdvancedSettingsBtn" class="bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-lg font-medium transition">
+                                حفظ الإعدادات المتقدمة
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- Modals (User Management modals are separate for clarity) -->
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 ease-in-out opacity-0">
+        <div class="bg-white dark:bg-gray-700 rounded-lg shadow-xl p-6 w-full max-w-md mx-4 transform transition-all duration-300 ease-in-out scale-95 opacity-0">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">إضافة مستخدم جديد</h3>
+                <button id="closeAddUserModalBtn" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <form id="addUserForm" class="space-y-4">
+                <div>
+                    <label for="newUserName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">الاسم الكامل</label>
+                    <input type="text" id="newUserName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary" required>
+                </div>
+                <div>
+                    <label for="newUserUsername" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">اسم المستخدم</label>
+                    <input type="text" id="newUserUsername" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary" required>
+                </div>
+                <div>
+                    <label for="newUserPassword" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">كلمة المرور</label>
+                    <input type="password" id="newUserPassword" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary" required>
+                </div>
+                <div>
+                    <label for="newUserRole" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">الدور</label>
+                    <select id="newUserRole" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
+                        <option value="admin">مدير</option>
+                        <option value="editor" selected>محرر</option>
+                        <option value="viewer">عرض فقط</option>
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-3 space-x-reverse pt-2">
+                    <button type="button" id="cancelAddUserBtn" class="bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-lg font-medium transition">إلغاء</button>
+                    <button type="submit" class="bg-primary hover:bg-primary-dark text-white px-6 py-2 rounded-lg font-medium transition">حفظ المستخدم</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Edit User Modal -->
+    <div id="editUserModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 ease-in-out opacity-0">
+        <div class="bg-white dark:bg-gray-700 rounded-lg shadow-xl p-6 w-full max-w-md mx-4 transform transition-all duration-300 ease-in-out scale-95 opacity-0">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">تعديل المستخدم</h3>
+                <button id="closeEditUserModalBtn" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <form id="editUserForm" class="space-y-4">
+                <input type="hidden" id="editUserId">
+                <div>
+                    <label for="editUserName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">الاسم الكامل</label>
+                    <input type="text" id="editUserName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary" required>
+                </div>
+                <div>
+                    <label for="editUserUsername" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">اسم المستخدم</label>
+                    <input type="text" id="editUserUsername" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary" required>
+                </div>
+                <div>
+                    <label for="editUserPassword" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">كلمة المرور الجديدة (اتركها فارغة إذا لم ترد التغيير)</label>
+                    <input type="password" id="editUserPassword" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
+                </div>
+                <div>
+                    <label for="editUserRole" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">الدور</label>
+                    <select id="editUserRole" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
+                        <option value="admin">مدير</option>
+                        <option value="editor">محرر</option>
+                        <option value="viewer">عرض فقط</option>
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-3 space-x-reverse pt-2">
+                    <button type="button" id="cancelEditUserBtn" class="bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-lg font-medium transition">إلغاء</button>
+                    <button type="submit" class="bg-primary hover:bg-primary-dark text-white px-6 py-2 rounded-lg font-medium transition">حفظ التعديلات</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Content Item Modal (for Terms, Grades, Subjects, Units) -->
+    <div id="contentItemModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 ease-in-out opacity-0">
+        <div class="bg-white dark:bg-gray-700 rounded-lg shadow-xl p-6 w-full max-w-md mx-4 transform transition-all duration-300 ease-in-out scale-95 opacity-0">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="contentItemModalTitle" class="text-lg font-bold text-gray-900 dark:text-gray-100">إضافة / تعديل عنصر</h3>
+                <button id="closeContentItemModalBtn" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <form id="contentItemForm" class="space-y-4">
+                <input type="hidden" id="contentItemId">
+                <input type="hidden" id="contentItemType">
+                <div>
+                    <label for="contentItemName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">الاسم</label>
+                    <input type="text" id="contentItemName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary" required>
+                </div>
+                <div>
+                    <label for="contentItemCode" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">الكود (معرف فريد)</label>
+                    <input type="text" id="contentItemCode" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary" required>
+                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">يجب أن يكون فريدًا. مثال: term1, g1, math, unit1_math.</p>
+                </div>
+                <div id="contentItemSubjectSelectDiv" class="hidden">
+                    <label for="contentItemSubjectId" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">المادة الأصل (للوحدات فقط)</label>
+                    <select id="contentItemSubjectId" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
+                        <!-- Options populated by JS -->
+                    </select>
+                </div>
+                <div class="flex items-center">
+                    <input type="checkbox" id="contentItemActive" checked class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+                    <label for="contentItemActive" class="ml-2 mr-2 block text-sm text-gray-900 dark:text-gray-200">نشط (متاح للاستخدام)</label>
+                </div>
+                <div class="flex justify-end space-x-3 space-x-reverse pt-2">
+                    <button type="button" id="cancelContentItemBtn" class="bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-lg font-medium transition">إلغاء</button>
+                    <button type="submit" class="bg-primary hover:bg-primary-dark text-white px-6 py-2 rounded-lg font-medium transition">حفظ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Question Details/Edit Modal -->
+    <div id="questionDetailsModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center bg-black bg-opacity-75 transition-opacity duration-300 ease-in-out opacity-0">
+        <div class="bg-white dark:bg-gray-700 rounded-lg shadow-xl p-6 w-full max-w-3xl mx-4 max-h-[90vh] overflow-y-auto transform transition-all duration-300 ease-in-out scale-95 opacity-0">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">تفاصيل وتعديل السؤال</h3>
+                <button id="closeQuestionDetailsModal" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <form id="editQuestionForm" class="space-y-4">
+                <input type="hidden" id="editQuestionId">
+                <div>
+                    <label for="editQuestionText" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">نص السؤال الأصلي</label>
+                    <textarea id="editQuestionText" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary" required></textarea>
+                </div>
+                <div>
+                    <label for="editQuestionNormalized" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">النص المعياري للسؤال (للبحث)</label>
+                    <textarea id="editQuestionNormalized" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"></textarea>
+                </div>
+                <div>
+                    <label for="editQuestionAnswer" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">الإجابة التفصيلية</label>
+                    <textarea id="editQuestionAnswer" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary" required></textarea>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div>
+                        <label for="editQuestionTerm" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">الفصل الدراسي</label>
+                        <select id="editQuestionTerm" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"></select>
+                    </div>
+                    <div>
+                        <label for="editQuestionGrade" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">الصف</label>
+                        <select id="editQuestionGrade" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"></select>
+                    </div>
+                    <div>
+                        <label for="editQuestionSubject" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">المادة</label>
+                        <select id="editQuestionSubject" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"></select>
+                    </div>
+                    <div>
+                        <label for="editQuestionUnit" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">الوحدة</label>
+                        <select id="editQuestionUnit" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"></select>
+                    </div>
+                     <div>
+                        <label for="editQuestionPage" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">رقم الصفحة</label>
+                        <input type="text" id="editQuestionPage" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
+                    </div>
+                </div>
+                <div>
+                    <label for="editQuestionKeywords" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">الكلمات المفتاحية (مفصولة بفاصلة)</label>
+                    <input type="text" id="editQuestionKeywords" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary" placeholder="كلمة1, كلمة2, كلمة3">
+                </div>
+                <div class="flex justify-end space-x-3 space-x-reverse pt-2">
+                    <button type="button" id="cancelEditQuestion" class="bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-lg font-medium transition">إلغاء</button>
+                    <button type="submit" class="bg-primary hover:bg-primary-dark text-white px-6 py-2 rounded-lg font-medium transition">حفظ التعديلات</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Confirm Delete All Questions Modal -->
+    <div id="confirmDeleteAllModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center bg-black bg-opacity-75 transition-opacity duration-300 ease-in-out opacity-0">
+        <div class="bg-white dark:bg-gray-700 rounded-lg shadow-xl p-6 w-full max-w-md mx-4 transform transition-all duration-300 ease-in-out scale-95 opacity-0">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">تأكيد حذف جميع الأسئلة</h3>
+                <button id="closeDeleteAllModalBtn" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <p class="mb-6 text-gray-600 dark:text-gray-300">هل أنت متأكد أنك تريد حذف جميع الأسئلة؟ لا يمكن التراجع عن هذا الإجراء.</p>
+            <div class="flex justify-end space-x-3 space-x-reverse">
+                <button id="cancelDeleteAll" class="bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-lg font-medium transition">إلغاء</button>
+                <button id="confirmDeleteAll" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-medium transition">تأكيد الحذف</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="js/data_storage.js"></script>
+    <script src="js/ui_common.js"></script>
+    <script src="js/charts.js"></script> 
+    <script src="js/dashboard_app.js"></script>
+    <script src="js/dashboard_settings.js"></script>
+    <script src="js/dashboard_users.js"></script>
+    <script src="js/dashboard_content.js"></script> 
+    <script src="js/dashboard_questions.js"></script> 
+    <script src="js/dashboard_stats.js"></script> 
+    <script src="js/dashboard_advanced.js"></script> 
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Helper | مساعد الطالب</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        /* Primary color will be set by JS from settings */
+        :root {
+            --primary-color: #2563eb; /* Default fallback */
+        }
+        /* Example of using the primary color */
+        .bg-primary { background-color: var(--primary-color); }
+        .text-primary { color: var(--primary-color); }
+        .border-primary { border-color: var(--primary-color); }
+        .hover\:bg-primary-dark:hover { background-color: color-mix(in srgb, var(--primary-color) 85%, black); }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen" data-theme="light">
+    <!-- Main App Container -->
+    <div id="app" class="flex-grow flex flex-col">
+        <!-- Navigation Bar -->
+        <nav class="bg-primary text-white shadow-lg">
+            <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+                <a href="home.html" class="flex items-center space-x-2 space-x-reverse cursor-pointer">
+                    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-primary font-bold text-xl">
+                        🎓
+                    </div>
+                    <h1 class="text-xl font-bold site-title-nav">مساعد الطالب</h1>
+                </a>
+                <div>
+                    <button id="adminLoginBtn" class="bg-white text-primary px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition">
+                        🔐 تسجيل الدخول للمشرف
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content - Home Page -->
+        <main id="homePage" class="flex-grow flex items-center justify-center">
+            <div class="text-center px-4 py-10 max-w-2xl mx-auto">
+                <div class="w-32 h-32 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <span class="text-5xl">🎓</span>
+                </div>
+                <h2 class="text-3xl font-bold mb-4 home-title">مرحبًا بك في مساعد الطالب</h2>
+                <p class="text-gray-600 mb-8 home-welcome-message">أدخل لتجد إجابات دقيقة لأسئلتك الأكاديمية بناءً على المنهج الدراسي</p>
+                <button id="studentEnterBtn" class="bg-primary hover:bg-primary-dark text-white px-8 py-4 rounded-lg text-lg font-bold transition transform hover:scale-105 shadow-md">
+                    🎓 إدخال الطالب
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <footer class="bg-gray-100 text-center text-gray-600 py-4 mt-auto">
+        <p class="footer-text">© 2023 Student Helper. جميع الحقوق محفوظة.</p>
+    </footer>
+
+    <script src="js/data_storage.js"></script>
+    <script src="js/ui_common.js"></script>
+    <script src="js/home_page.js"></script>
+</body>
+</html>

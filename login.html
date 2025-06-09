@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل دخول المشرف - مساعد الطالب</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        /* Primary color will be set by JS from settings */
+        :root {
+            --primary-color: #2563eb; /* Default fallback */
+        }
+        /* Example of using the primary color */
+        .bg-primary { background-color: var(--primary-color); }
+        .text-primary { color: var(--primary-color); }
+        .border-primary { border-color: var(--primary-color); }
+        .focus\:ring-primary:focus { ring-color: var(--primary-color); }
+        .focus\:border-primary:focus { border-color: var(--primary-color); }
+        .hover\:bg-primary-dark:hover { background-color: color-mix(in srgb, var(--primary-color) 85%, black); }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen" data-theme="light">
+    <!-- Main App Container -->
+    <div id="app" class="flex-grow flex flex-col">
+        <!-- Navigation Bar -->
+        <nav class="bg-primary text-white shadow-lg">
+            <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+                <a href="index.html" class="flex items-center space-x-2 space-x-reverse cursor-pointer">
+                    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-primary font-bold text-xl">
+                        🎓
+                    </div>
+                    <h1 class="text-xl font-bold site-title-nav">مساعد الطالب</h1>
+                </a>
+                <div>
+                    <!-- No buttons needed here for login page, or perhaps a "Back to Home" -->
+                     <a href="index.html" class="bg-white text-primary px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition">
+                        العودة للرئيسية
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content - Login Form -->
+        <main class="flex-grow flex items-center justify-center p-6">
+            <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md mx-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold">تسجيل دخول المشرف</h3>
+                    <!-- Optional: Close button if it navigates somewhere, otherwise remove -->
+                </div>
+                
+                <form id="loginForm" class="space-y-4">
+                    <div>
+                        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">اسم المستخدم</label>
+                        <input type="text" id="username" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary" required>
+                    </div>
+                    
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">كلمة المرور</label>
+                        <input type="password" id="password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary" required>
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-primary hover:bg-primary-dark text-white py-2 px-4 rounded-lg font-medium transition">
+                        تسجيل الدخول
+                    </button>
+                </form>
+                <p id="loginError" class="text-red-500 text-sm mt-4 text-center hidden"></p>
+            </div>
+        </main>
+    </div>
+
+    <footer class="bg-gray-100 text-center text-gray-600 py-4 mt-auto">
+        <p class="footer-text">© 2023 Student Helper. جميع الحقوق محفوظة.</p>
+    </footer>
+
+    <script src="js/data_storage.js"></script>
+    <script src="js/ui_common.js"></script>
+    <script src="js/login_page.js"></script>
+</body>
+</html>
