@@ -149,7 +149,10 @@ function displayStudentResults(questionData, originalStudentQuery) {
     document.getElementById('studentResultContainer').classList.remove('hidden');
 
     document.getElementById('studentOriginalQuestion').innerHTML = 
-  `سؤالك المطروح: ${originalStudentQuery}<br><br>السؤال حسب ما هو في الكتاب: ${questionData.question_original}`;
+  `<strong>سؤالك المطروح:</strong><br>${originalStudentQuery}`;
+
+document.getElementById('bookQuestion').innerHTML = 
+  `<strong>السؤال حسب ما هو في الكتاب:</strong><br>${questionData.question_original}`;
 
 document.getElementById('studentAnswer').textContent = questionData.answer_detailed;
 
