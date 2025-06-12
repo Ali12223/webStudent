@@ -148,8 +148,10 @@ function displayStudentResults(questionData, originalStudentQuery) {
     document.getElementById('studentFormContainer').classList.add('hidden');
     document.getElementById('studentResultContainer').classList.remove('hidden');
 
-    document.getElementById('studentOriginalQuestion').textContent = `سؤالك: ${originalStudentQuery} ( سؤالك المطروح هو : ${questionData.question_original})`;
-    document.getElementById('studentAnswer').textContent = questionData.answer_detailed;
+    document.getElementById('studentOriginalQuestion').innerHTML = 
+  `سؤالك المطروح: ${originalStudentQuery}<br><br>السؤال حسب ما هو في الكتاب: ${questionData.question_original}`;
+
+document.getElementById('studentAnswer').textContent = questionData.answer_detailed;
 
     // Get names from codes
     const subjects = window.dataStorage.getSubjects();
